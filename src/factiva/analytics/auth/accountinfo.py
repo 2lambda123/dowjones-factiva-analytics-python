@@ -33,11 +33,11 @@ class AccountInfo:
     total_stream_instances: int = None
     total_stream_subscriptions: int = None
     enabled_company_identifiers: list = None
-    streams: StreamingInstanceList = None
-    extractions: SnapshotExtractionList = None
+    streams_list: StreamingInstanceList = None
+    extractions_list: SnapshotExtractionList = None
 
 
-    def __init__(self, user_key: UserKey or str=None):
+    def __init__(self, user_key: UserKey | str=None):
         """
         Construct the instance of the class
         
@@ -208,9 +208,9 @@ class AccountInfo:
             if not updates:
                 extraction_df = extraction_df.loc[extraction_df.update_id.isnull()]
 
-        self.extractions = SnapshotExtractionList(extraction_df)
+        self.extractions_list = SnapshotExtractionList(extraction_df)
         self.__log.info('get_extractions ended')
-        return self.extractions
+        return self.extractions_list
 
 
     @log.factiva_logger()
@@ -269,7 +269,7 @@ class AccountInfo:
         else:
             raise RuntimeError('Unexpected Get Streams API Error')
         
-        self.streams = StreamingInstanceList(stream_df)
+        self.streams_list = StreamingInstanceList(stream_df)
         self.__log.info('get_streams ended')
         return stream_df
 

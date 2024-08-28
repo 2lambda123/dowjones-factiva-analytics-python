@@ -9,18 +9,18 @@ API_ACCOUNT_OAUTH2_URL = 'https://accounts.dowjones.com/oauth2/v1/token'
 API_LATEST_VERSION = "2.0"
 
 # UserKey
-API_ACCOUNT_BASEPATH = '/alpha/accounts'
-API_ACCOUNT_STREAM_CREDENTIALS_BASEPATH = '/accounts/streaming-credentials'
+API_ACCOUNT_BASEPATH = '/sns-accounts'
+API_ACCOUNT_STREAM_CREDENTIALS_BASEPATH = '/sns-accounts/streaming-credentials'
 
 # Dynamic Prefixes
-ALPHA_BASEPATH = '/alpha'
+# ALPHA_BASEPATH = ''
 DNA_BASEPATH = '/dna'  # Deprecated
 
 # Snapshots
-API_SNAPSHOTS_BASEPATH = '/alpha/extractions/documents'
+API_SNAPSHOTS_BASEPATH = '/extractions/documents'
 API_EXPLAIN_SUFFIX = '/_explain'
 API_ANALYTICS_BASEPATH = '/alpha/analytics'
-API_EXTRACTIONS_BASEPATH = '/alpha/extractions'
+API_EXTRACTIONS_BASEPATH = '/extractions'
 API_EXTRACTIONS_SAMPLES_SUFFIX = '/samples'
 API_DEFAULT_EXTRACTION_TYPE = "documents"
 API_SAMPLES_EXTRACTION_TYPE = "samples"

@@ -4,7 +4,7 @@ UserKey is the most used authentication method within
 Factiva Analytics APIs.
 """
 import json
-import pandas as pd
+# import pandas as pd
 from ..common import log, req, tools, const, config
 
 
@@ -16,7 +16,7 @@ class UserKey:
     """
 
     # __API_ENDPOINT_BASEURL = f'{const.API_HOST}{const.API_ACCOUNT_BASEPATH}/'
-    __API_CLOUD_TOKEN_URL = f'{const.API_HOST}{const.ALPHA_BASEPATH}{const.API_ACCOUNT_STREAM_CREDENTIALS_BASEPATH}'
+    __API_CLOUD_TOKEN_URL = f'{const.API_HOST}{const.API_ACCOUNT_STREAM_CREDENTIALS_BASEPATH}'
     __log = None
     
     key: str = None
