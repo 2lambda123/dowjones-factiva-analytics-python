@@ -187,7 +187,8 @@ class OAuthUser:
             self._id_token = response_body['id_token']
             self._access_token = response_body['access_token']
             bearer_payload = eval(base64.b64decode(self._access_token.split('.')[1] + '==').decode('utf-8'))
-            self._id_expiration = datetime.datetime.utcfromtimestamp(int(bearer_payload['exp'])).replace(tzinfo=datetime.timezone.utc)
+            # self._id_expiration = datetime.datetime.utcfromtimestamp(int(bearer_payload['exp'])).replace(tzinfo=datetime.timezone.utc)
+            self._id_expiration = datetime.datetime.fromtimestamp(int(bearer_payload['exp']), datetime.UTC)
             return True
         elif authn_response.status_code == 403:
             raise PermissionError('Invalid user credentials')
@@ -232,7 +233,8 @@ class OAuthUser:
         response_body = authz_response.json()
         self._jwt_token = response_body["access_token"]
         bearer_payload = eval(base64.b64decode(self._jwt_token.split('.')[1] + '==').decode('utf-8'))
-        self._jwt_expiration = datetime.datetime.utcfromtimestamp(int(bearer_payload['exp'])).replace(tzinfo=datetime.timezone.utc)
+        # self._jwt_expiration = datetime.datetime.utcfromtimestamp(int(bearer_payload['exp'])).replace(tzinfo=datetime.timezone.utc)
+        self._jwt_expiration = datetime.datetime.fromtimestamp(int(bearer_payload['exp']), datetime.UTC)
         return True
 
 
