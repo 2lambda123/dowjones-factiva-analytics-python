@@ -59,16 +59,17 @@ setup(
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12'
     ],
     keywords='news, news aggregator, risk, compliance, nlp, alternative data, factiva, trading news, market movers',
     # Required version conditioned by typed lists and Pandas
     python_requires='>=3.8.4',
     install_requires=[
-        'requests>=2.28.1',
-        'pandas>=1.5.2',
-        'fastavro>=1.7.0',
-        'google-cloud-core>=2.3.2',
-        'google-cloud-pubsub>=2.13.11'
+        'requests>=2.30.0',
+        'pandas>=2.2.0',
+        'fastavro>=1.9.0',
+        'google-cloud-core>=2.4.0',
+        'google-cloud-pubsub>=2.22.0'
     ],
     extras_require={
         "MongoDB": ["pymongo"],
