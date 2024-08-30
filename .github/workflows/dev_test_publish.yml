@@ -25,14 +25,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: 'dev'
 
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: '3.12.4'
+          python-version: '3.10.9'
 
       - name: Install latest PIP
         run: |
@@ -55,14 +55,14 @@ jobs:
       needs: [test]
       steps:
         - name : Checkout code
-          uses : actions/checkout@v3
+          uses : actions/checkout@v4
           with:
             ref: 'dev'
 
         - name: Set up Python
           uses: actions/setup-python@v3
           with:
-            python-version: '3.12.4'
+            python-version: '3.10.9'
 
         - name: Install latest pip, setuptools, twine + wheel
           run: |
@@ -84,5 +84,5 @@ jobs:
           with:
             user: __token__
             password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-            repository_url: https://test.pypi.org/legacy/
-            skip_existing: true
+            repository-url: https://test.pypi.org/legacy/
+            skip-existing: true
