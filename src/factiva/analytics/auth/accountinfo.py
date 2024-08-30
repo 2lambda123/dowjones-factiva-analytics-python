@@ -4,6 +4,7 @@ endpoints available in Factiva Analytics APIs.
 """
 import json
 import pandas as pd
+from typing import Union
 from ..common import log, req, tools, const, config
 from ..auth import UserKey
 from ..snapshots import SnapshotExtractionList
@@ -37,7 +38,7 @@ class AccountInfo:
     extractions_list: SnapshotExtractionList = None
 
 
-    def __init__(self, user_key: UserKey | str=None):
+    def __init__(self, user_key: Union[UserKey, str]):
         """
         Construct the instance of the class
         
