@@ -32,7 +32,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: '3.9'
+          python-version: '3.12.4'
 
       - name: Install latest PIP
         run: |
@@ -62,7 +62,7 @@ jobs:
         - name: Set up Python
           uses: actions/setup-python@v3
           with:
-            python-version: '3.9'
+            python-version: '3.12.4'
 
         - name: Install latest pip, setuptools, twine + wheel
           run: |
