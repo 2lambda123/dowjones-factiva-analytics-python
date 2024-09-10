@@ -9,16 +9,22 @@ FACTIVA_USERKEY = config.load_environment_value("FACTIVA_USERKEY")
 SAVE_PATH = os.getcwd()
 
 def test_create_taxonomy_instance_env_user():
+    if GITHUB_CI:
+        pytest.skip("Not to be tested in GitHub Actions")
     t = FactivaTaxonomy()
     assert t.user_key.key == FACTIVA_USERKEY
 
 
 def test_create_taxonomy_instance_str_user():
+    if GITHUB_CI:
+        pytest.skip("Not to be tested in GitHub Actions")
     t = FactivaTaxonomy(user_key=FACTIVA_USERKEY)
     assert t.user_key.key == FACTIVA_USERKEY
 
 
 def test_create_taxonomy_instance_userkey_user():
+    if GITHUB_CI:
+        pytest.skip("Not to be tested in GitHub Actions")
     u = UserKey()
     t = FactivaTaxonomy(user_key=u)
     assert t.user_key.key == FACTIVA_USERKEY
