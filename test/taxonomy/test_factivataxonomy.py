@@ -1,8 +1,10 @@
 import os
+import pytest
 import pandas as pd
 from factiva.analytics import FactivaTaxonomy, FactivaTaxonomyCategories, UserKey
 from factiva.analytics.common import config
 
+GITHUB_CI = config.load_environment_value('CI', False)
 FACTIVA_USERKEY = config.load_environment_value("FACTIVA_USERKEY")
 SAVE_PATH = os.getcwd()
 
@@ -23,6 +25,8 @@ def test_create_taxonomy_instance_userkey_user():
 
 
 def test_download_category_file():
+    if GITHUB_CI:
+        pytest.skip("Not to be tested in GitHub Actions")
     t = FactivaTaxonomy()
     assert t.download_raw_category(FactivaTaxonomyCategories.INDUSTRIES, path=SAVE_PATH)
     assert t.download_raw_category(FactivaTaxonomyCategories.INDUSTRIES, path=SAVE_PATH, file_format='avro')
@@ -34,6 +38,8 @@ def test_download_category_file():
 
 
 def test_get_category_codes():
+    if GITHUB_CI:
+        pytest.skip("Not to be tested in GitHub Actions")
     t = FactivaTaxonomy()
     industries = t.get_category_codes(FactivaTaxonomyCategories.INDUSTRIES)
     assert isinstance(industries, pd.DataFrame)
@@ -43,6 +49,8 @@ def test_get_category_codes():
 
 
 def test_lookup_code_good():
+    if GITHUB_CI:
+        pytest.skip("Not to be tested in GitHub Actions")
     t = FactivaTaxonomy()
     assert t.all_subjects == None
     mcat = t.lookup_code('MCAT', FactivaTaxonomyCategories.SUBJECTS)
