@@ -96,6 +96,7 @@ class SnapshotExtractionQuery(SnapshotBaseQuery):
 
     file_format: str
     limit: int
+    shards: int
 
     def __init__(self,
                 where:str = None,
@@ -104,7 +105,8 @@ class SnapshotExtractionQuery(SnapshotBaseQuery):
                 excludes: dict = None,
                 exclude_lists: dict = None,
                 file_format: str = const.API_AVRO_FORMAT,
-                limit: int = 0) -> None:
+                limit: int = 0,
+                shards: int = 25) -> None:
         """
         Creates a new SnapshotExtractionQuery instance.
 
@@ -143,6 +145,12 @@ class SnapshotExtractionQuery(SnapshotBaseQuery):
         else:
             raise ValueError("Limit value is not valid or not positive")
 
+        tools.validate_type(shards, int, "Unexpected value for limit")
+        if shards >= 25 and shards <= 10000:
+            self.shards = shards
+        else:
+            raise ValueError("Shards value is not valid")
+        
         tools.validate_type(file_format, str, "Unexpected value for file_format")
         file_format = file_format.lower().strip()
         tools.validate_field_options(file_format, const.API_EXTRACTION_FILE_FORMATS)
@@ -166,6 +174,7 @@ class SnapshotExtractionQuery(SnapshotBaseQuery):
             query_dict["query"].update({"limit": self.limit})
 
         query_dict["query"].update({"format": self.file_format})
+        query_dict["query"].update({"shards": self.shards})
 
         return query_dict
 
@@ -178,6 +187,7 @@ class SnapshotExtractionQuery(SnapshotBaseQuery):
         ret_val = super().__str__(detailed, prefix, root_prefix)
         ret_val = ret_val.replace('└─', '├─')
         ret_val += f"\n{prefix}file_format: {tools.print_property(self.file_format)}"
+        ret_val += f"\n{prefix}shards: {tools.print_property(self.shards)}"
         ret_val += f"\n{prefix[0:-2]}└─limit: {tools.print_property(self.limit)}"
         return ret_val
 
