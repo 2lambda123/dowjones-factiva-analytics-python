@@ -60,7 +60,7 @@ class SnapshotExtractionJobReponse(SnapshotBaseJobResponse):
         ret_val += f"\n{prefix}files: {tools.print_property(self.files)}"
         if self.errors:
             ret_val += f"\n{prefix.replace('│  ├', '   └')}errors: [{len(self.errors)}]"
-            err_list = [f"\n{prefix[0:-1]}  |-{err['title']}: {err['detail']}" for err in self.errors]
+            err_list = [f"\n{prefix.replace('│  ├', '     └')}[{err['title']}]: {err['detail']}" for err in self.errors]
             for err in err_list:
                 ret_val += err
         else:
@@ -329,12 +329,16 @@ class SnapshotExtraction(SnapshotBase):
             self.__log.info(f'Job ID {self.job_response.job_id} info retrieved successfully')
             response_data = response.json()
             self.job_response.job_state = response_data['data']['attributes']['current_state']
+            self.__log.info(f"Received State: {self.job_response.job_state}")
             self.job_response.job_link = response_data['links']['self']
             if self.job_response.job_state == const.API_JOB_DONE_STATE:
                 files_obj_list = response_data['data']['attributes']['files']
                 self.job_response.files = [obj['uri'] for obj in files_obj_list]
             if 'errors' in response_data.keys():
+                self.job_response.files = []
                 self.job_response.errors = response_data['errors']
+                for err in self.job_response.errors:
+                    self.__log.error(f"JobError: [{err['title']}] {err['detail']}")
         elif response.status_code == 404:
             raise ValueError('Job ID does not exist for the provided user key.')
         elif response.status_code == 400:
@@ -402,7 +406,7 @@ class SnapshotExtraction(SnapshotBase):
             are available for download or the download failed.
 
         """
-
+        self.__log.info('download_files start')
         if self.job_response:
             if path is None:
                 path = os.path.join(os.getcwd(), self.job_response.short_id)
@@ -418,6 +422,7 @@ class SnapshotExtraction(SnapshotBase):
             return True
         else:
             print("Job has not yet been submitted")
+        self.__log.info('download_files end')
         return False
 
 
@@ -447,7 +452,10 @@ class SnapshotExtraction(SnapshotBase):
             time.sleep(const.API_JOB_ACTIVE_WAIT_SPACING)
             self.get_job_response()
         
-        self.download_files(path=path)
+        if len(self.job_response.files) > 0:
+            self.download_files(path=path)
+        else:
+            self.__log.info('No files to download. Check for error messages.')
         self.__log.info('process_job End')
         return True
 
