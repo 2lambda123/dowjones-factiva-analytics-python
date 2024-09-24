@@ -37,7 +37,7 @@ class SnapshotExplainSamplesResponse():
         return super().__repr__()
         
 
-    def __str__(self, detailed=True, prefix='  ├─', root_prefix='') -> None:
+    def __str__(self, prefix='  ├─', root_prefix='') -> None:
         ret_val = f"{root_prefix}<factiva.analytics.{str(self.__class__).split('.')[-1]}"
         ret_val += f"\n{prefix}num_samples: {tools.print_property(self.num_samples)}"
         ret_val += f"\n{prefix[0:-2]}└─data: {tools.print_property(self.data)}"
@@ -360,7 +360,7 @@ class SnapshotExplain(SnapshotBase): # TODO: Refactor when repeating code across
             'num_samples': num_samples
         }
 
-        self.__log.info(f'Requesting Samples for JobID {self.job_response.job_id}')
+        self.__log.info(f'Requesting {num_samples} samples for JobID {self.job_response.job_id}')
         samples_url = f'{self.__SAMPLES_BASEURL}/{self.job_response.job_id}'
         response = req.api_send_request(method='GET',
                                         endpoint_url=samples_url,
@@ -420,7 +420,7 @@ class SnapshotExplain(SnapshotBase): # TODO: Refactor when repeating code across
     def __str__(self, detailed=True, prefix='  ├─', root_prefix=''):
         ret_val = super().__str__(detailed, prefix, root_prefix)
         if self.samples:
-            ret_val += f"\n{prefix[0:-2]}└─samples: {self.samples.__str__(detailed=False, prefix='     ├─')}"
+            ret_val += f"\n{prefix[0:-2]}└─samples: {self.samples.__str__(prefix='     ├─')}"
         else:
             ret_val += f"\n{prefix[0:-2]}└─samples: <NotRetrieved>"
         return ret_val
