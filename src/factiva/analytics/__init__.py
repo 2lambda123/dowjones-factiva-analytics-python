@@ -10,7 +10,8 @@ __all__ = [
     'SnapshotExtraction', 'SnapshotExtractionQuery', 'SnapshotExtractionJobReponse',
     'SnapshotExtractionList', 'SnapshotExtractionListItem',
     'StreamingInstance', 'StreamingQuery', 'StreamingSubscription',
-    'StreamingInstanceList', 'StreamingInstanceListItem'
+    'StreamingInstanceList', 'StreamingInstanceListItem',
+    'SnapshotFiles'
 ]
 
 from .__version__ import __version__
@@ -21,6 +22,7 @@ from .snapshots import SnapshotExplain, SnapshotExplainQuery, SnapshotExplainJob
 from .snapshots import SnapshotTimeSeries, SnapshotTimeSeriesQuery, SnapshotTimeSeriesJobReponse
 from .snapshots import SnapshotExtraction, SnapshotExtractionQuery, SnapshotExtractionJobReponse, SnapshotExtractionList, SnapshotExtractionListItem
 from .streams import StreamingInstance, StreamingQuery, StreamingSubscription, StreamingInstanceList, StreamingInstanceListItem
+from .integration import SnapshotFiles
 # from .tools import JSONLFileHandler, BigQueryHandler, MongoDBHandler
 
 version = __version__
