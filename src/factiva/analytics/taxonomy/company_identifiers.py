@@ -1,15 +1,12 @@
 from ..common import tools
 from ..common import req
-from .. import (UserKey, factiva_logger, get_factiva_logger)
-from ..common import (API_COMPANIES_IDENTIFIER_TYPE, API_HOST,
-                                API_SNAPSHOTS_COMPANIES_BASEPATH,
-                                API_SNAPSHOTS_COMPANIES_PIT,
-                                API_SNAPSHOTS_TAXONOMY_BASEPATH,
-                                DOWNLOAD_DEFAULT_FOLDER,
-                                TICKER_COMPANY_IDENTIFIER)
+from ..common import log
+from ..common import tools
+from ..common import const
+from ..auth import UserKey
 
 
-class Company():
+class FactivaCompany():
     """Class that represents the company available within the Snapshots API.
     
     Parameters
@@ -29,8 +26,8 @@ class Company():
         >>> c = Company(user_key=u)
     """
 
-    __API_ENDPOINT_TAXONOMY = f'{API_HOST}{API_SNAPSHOTS_TAXONOMY_BASEPATH}'
-    __API_ENDPOINT_COMPANY = f'{API_HOST}{API_SNAPSHOTS_COMPANIES_BASEPATH}'
+    __API_ENDPOINT_TAXONOMY = f'{const.API_HOST}{const.API_SNAPSHOTS_TAXONOMY_BASEPATH}'
+    __API_ENDPOINT_COMPANY = f'{const.API_HOST}{const.API_SNAPSHOTS_COMPANIES_BASEPATH}'
     __TICKER_COMPANY_IDENTIFIER_NAME = 'ticker_exchange'
 
     user_key=None
@@ -38,10 +35,11 @@ class Company():
     def __init__(self, user_key=None):
         """Class initializar"""
         self.user_key = UserKey(user_key, True)
-        self.log= get_factiva_logger()
+        # self.log = log.get_factiva_logger()
+        self.__log = log.get_factiva_logger()
 
 
-    @factiva_logger
+    @log.factiva_logger
     def get_identifiers(self) -> list:
         """Request for a list of available taxonomy categories.
 
@@ -70,7 +68,7 @@ class Company():
             'user-key': self.user_key.key
         }
 
-        endpoint = f'{common.API_HOST}{common.API_SNAPSHOTS_COMPANY_IDENTIFIERS_BASEPATH}'
+        endpoint = f'{const.API_HOST}{const.API_SNAPSHOTS_COMPANY_IDENTIFIERS_BASEPATH}'
 
         response = req.api_send_request(method='GET', endpoint_url=endpoint, headers=headers_dict)
 
@@ -80,7 +78,7 @@ class Company():
         raise RuntimeError('API Request returned an unexpected HTTP status')
 
 
-    @factiva_logger
+    @log.factiva_logger
     def validate_point_time_request(self, identifier):
         """Validate if the user is allowes to perform company operation and if the identifier given is valid
         
@@ -98,9 +96,9 @@ class Company():
         if (not len(self.user_key.enabled_company_identifiers)):
             raise ValueError('User is not allowed to perform this operation')
 
-        tools.validate_field_options(identifier, API_COMPANIES_IDENTIFIER_TYPE)
+        tools.validate_field_options(identifier, const.API_COMPANIES_IDENTIFIER_TYPE)
 
-        if (identifier == TICKER_COMPANY_IDENTIFIER):
+        if (identifier == const.TICKER_COMPANY_IDENTIFIER):
             identifier = self.__TICKER_COMPANY_IDENTIFIER_NAME
 
         identifier_description = list(
@@ -109,7 +107,7 @@ class Company():
         if (not len(identifier_description)):
             raise ValueError('User is not allowed to perform this operation')
 
-    @factiva_logger
+    @log.factiva_logger
     def point_in_time_download_all(self,
                                    identifier,
                                    file_name,
@@ -148,14 +146,14 @@ class Company():
             to_save_path = DOWNLOAD_DEFAULT_FOLDER
 
         headers_dict = {'user-key': self.user_key.key}
-        endpoint = f'{self.__API_ENDPOINT_TAXONOMY}{API_SNAPSHOTS_COMPANIES_PIT}/{identifier}/{file_format}'
+        endpoint = f'{self.__API_ENDPOINT_TAXONOMY}{const.API_SNAPSHOTS_COMPANIES_PIT}/{identifier}/{file_format}'
 
         local_file_name = req.download_file(endpoint, headers_dict, file_name,
                                             file_format, to_save_path,
                                             add_timestamp)
         return local_file_name
 
-    @factiva_logger
+    @log.factiva_logger
     def point_in_time_query(self, identifier, value) -> dict:
         """Returns the resolved Factiva code and date ranges when the instrument from the identifier, was valid.
         
@@ -179,7 +177,7 @@ class Company():
 
         self.validate_point_time_request(identifier)
         headers_dict = {'user-key': self.user_key.key}
-        endpoint = f'{self.__API_ENDPOINT_COMPANY}{API_SNAPSHOTS_COMPANIES_PIT}/{identifier}/{value}'
+        endpoint = f'{self.__API_ENDPOINT_COMPANY}{const.API_SNAPSHOTS_COMPANIES_PIT}/{identifier}/{value}'
 
         response = req.api_send_request(endpoint_url=endpoint,
                                         headers=headers_dict)
@@ -227,7 +225,7 @@ class Company():
             'user-key': self.user_key.key
         }
 
-        endpoint = f'{common.API_HOST}{common.API_SNAPSHOTS_COMPANIES_BASEPATH}/{code_type}/{company_code}'
+        endpoint = f'{const.API_HOST}{const.API_SNAPSHOTS_COMPANIES_BASEPATH}/{code_type}/{company_code}'
 
         response = req.api_send_request(method='GET', endpoint_url=endpoint, headers=headers_dict)
 
@@ -236,6 +234,7 @@ class Company():
             return pd.DataFrame.from_records([response_data['data']['attributes']])
 
         raise RuntimeError('API Request returned an unexpected HTTP status')
+
 
     @log.factiva_logger
     def get_multiple_companies(self, code_type, company_codes) -> pd.DataFrame:
@@ -286,7 +285,7 @@ class Company():
             }
         }
 
-        endpoint = f'{common.API_HOST}{common.API_SNAPSHOTS_COMPANIES_BASEPATH}/{code_type}'
+        endpoint = f'{const.API_HOST}{const.API_SNAPSHOTS_COMPANIES_BASEPATH}/{code_type}'
 
         response = req.api_send_request(method='POST', endpoint_url=endpoint, headers=headers_dict, payload=payload_dict)
 
@@ -294,6 +293,7 @@ class Company():
             response_data = response.json()
             return pd.DataFrame.from_records(response_data['data']['attributes']['successes'])
         raise RuntimeError(f'API Request returned an unexpected HTTP status with message: {response.text}')
+
 
     @log.factiva_logger
     def get_company(self, code_type, company_codes) -> pd.DataFrame:

@@ -100,7 +100,8 @@ class FactivaTaxonomy():
             self.user_key = user_key
         else:
             self.user_key = UserKey(user_key)
-        self.log= log.get_factiva_logger()
+        # self.log= log.get_factiva_logger()
+        self.__log = log.get_factiva_logger()
         self.all_subjects = None
         self.all_regions = None
         self.all_industries = None
@@ -260,6 +261,7 @@ class FactivaTaxonomy():
         return True
 
 
+    @log.factiva_logger
     def lookup_code(self, code:str, category:FactivaTaxonomyCategories) -> dict:
         """
         Finds the descriptor and other details based on the provide code and
