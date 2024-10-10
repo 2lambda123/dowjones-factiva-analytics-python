@@ -76,7 +76,8 @@ def api_send_request(method:str='GET',
 
     if config.USERAGENT:
         headers.update({
-            'User-Agent': f'RDL-Python-{__version__}-{vsum}'
+            'User-Agent': f'RDL-Python-{__version__}-{vsum}',
+            'X-API-VERSION': const.API_LATEST_VERSION
         })
         __log.debug(f"{method} Request with User-Agent {headers['User-Agent']}")
 
