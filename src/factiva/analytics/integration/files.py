@@ -32,27 +32,24 @@ class SnapshotFiles(object):
             records = [r for r in reader]
             r_df = pd.DataFrame.from_records(records)
 
-        if all_fields is False:
-            if stats_only is True:
+        if not all_fields:
+            if stats_only:
                 r_df = r_df[const.SNAPSHOT_FILE_STATS_FIELDS]
+            else:
+                if merge_body:
+                    r_df['body'] = r_df['snippet'] + '\n\n' + r_df['body']
+                    r_df.drop('snippet', axis=1, inplace=True)
+                r_df['body'] = r_df['body'].astype(str)
 
-            if (stats_only is False) & (merge_body is True):
-                r_df['body'] = r_df['snippet'] + '\n\n' + r_df['body']
-                r_df.drop('snippet', axis=1, inplace=True)
-
-            if stats_only is False:
-                r_df['body'] = r_df[['body']].apply(lambda x: '{}'.format(x[0]), axis=1)
-
-            for d_field in const.SNAPSHOT_FILE_DELETE_FIELDS:
-                if d_field in r_df.columns:
-                    r_df.drop(d_field, axis=1, inplace=True)
+            r_df.drop(columns=[d_field for d_field in const.SNAPSHOT_FILE_DELETE_FIELDS if d_field in r_df.columns], inplace=True)
         else:
             # TODO: Support merge_body for when all_fields is True
-            r_df['body'] = r_df[['body']].apply(lambda x: '{}'.format(x[0]), axis=1)
+            r_df['body'] = r_df['body'].astype(str)
 
-        r_df['publication_datetime'] = r_df['publication_datetime'].astype('datetime64[ms]')
-        r_df['modification_datetime'] = r_df['modification_datetime'].astype('datetime64[ms]')
-        r_df['ingestion_datetime'] = r_df['ingestion_datetime'].astype('datetime64[ms]')
+        for field in const.TIMESTAMP_FIELDS:
+            if field in r_df.columns:
+                r_df[field] = r_df[field].astype('datetime64[ms]')
+
         return r_df
 
 
@@ -96,7 +93,6 @@ class SnapshotFiles(object):
         """
         with open(filepath, "rb") as fp:
             reader = fastavro.reader(fp)
-            records = [r for r in reader]
-            r_df = pd.DataFrame.from_records(records)
+            r_df = pd.DataFrame.from_records(reader)
 
         return r_df
