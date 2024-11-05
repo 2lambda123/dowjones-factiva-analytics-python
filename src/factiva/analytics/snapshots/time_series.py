@@ -44,7 +44,7 @@ class SnapshotTimeSeriesJobReponse(SnapshotBaseJobResponse):
 
     def __str__(self, detailed=True, prefix='  ├─', root_prefix=''):
         ret_val = super().__str__(detailed, prefix, root_prefix)
-        ret_val += f"{prefix}download_link: {tools.print_property(self.download_link)}"
+        ret_val += f"{prefix}download_link: {tools.print_property(self.download_link[0:20] + '...' + self.download_link[-20:])}"
         if self.errors:
             ret_val += f"\n{prefix.replace('├', '└')}errors: [{len(self.errors)}]"
             err_list = [f"\n{prefix[0:-1]}  |-{err['title']}: {err['detail']}" for err in self.errors]
@@ -210,7 +210,7 @@ class SnapshotTimeSeriesQuery(SnapshotBaseQuery):
 
     def __str__(self, detailed=True, prefix='  ├─', root_prefix=''):
         ret_val = super().__str__(detailed, prefix, root_prefix)
-        ret_val = ret_val.replace('└─...', '├─...')
+        ret_val = ret_val.replace('└─ex', '├─ex')
         ret_val += f"\n{prefix}frequency: {tools.print_property(self.frequency)}"
         ret_val += f"\n{prefix}date_field: {tools.print_property(self.date_field)}"
         ret_val += f"\n{prefix}group_dimensions: {tools.print_property(self.group_dimensions)}"
@@ -239,9 +239,9 @@ class SnapshotTimeSeries(SnapshotBase):
 
     def __init__(
         self,
+        job_id=None,
         user_key=None,
-        query=None,
-        job_id=None
+        query=None
     ):
         super().__init__(user_key=user_key, query=query, job_id=job_id)
         self.__log = log.get_factiva_logger()
@@ -352,6 +352,7 @@ class SnapshotTimeSeries(SnapshotBase):
             raise ValueError(f'Bad Request: {detail}')
         else:
             raise RuntimeError(f'API request returned an unexpected HTTP status, with content [{response.text}]')
+        # TODO: Download file and assign the self.job_response.data variable
         self.__log.info('get_job_response End')
         return True
 
