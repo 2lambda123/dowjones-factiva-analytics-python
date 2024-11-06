@@ -10,6 +10,7 @@ from . import const
 from . import config
 from ...analytics import __version__
 from .log import factiva_logger, get_factiva_logger
+from security import safe_requests
 
 __log = get_factiva_logger()
 
@@ -21,7 +22,7 @@ def _send_get_request(endpoint_url:str=const.API_HOST,
     """Send get request."""
     if (qs_params is not None) and (not isinstance(qs_params, dict)):
         raise ValueError('_send_get_request: Unexpected qs_params value')
-    get_response = requests.get(endpoint_url,
+    get_response = safe_requests.get(endpoint_url,
                         headers=headers,
                         params=qs_params,
                         stream=stream)

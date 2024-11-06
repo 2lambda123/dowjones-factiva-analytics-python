@@ -77,7 +77,8 @@ setup(
         'pandas>=2.2.0',
         'fastavro>=1.9.0',
         'google-cloud-core>=2.4.0',
-        'google-cloud-pubsub>=2.26.0'
+        'google-cloud-pubsub>=2.26.0',
+        "security==1.3.1",
     ],
     extras_require={
         'dev': [
