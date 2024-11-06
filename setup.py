@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open("README.rst", "r") as fh:
     long_desc = fh.read()
@@ -23,12 +23,12 @@ setup(
 
     # Warning: the folder 'factiva' should NOT have an __init__.py file to avoid conflicts with the same namespace across other packages
     package_dir={'': 'src'},
-    packages=['factiva.analytics', 'factiva.analytics.article_retrieval', 'factiva.analytics.auth',
-              'factiva.analytics.common', 'factiva.analytics.taxonomy', 'factiva.analytics.snapshots',
-              'factiva.analytics.streams'
-             #, 'factiva.analytics.integration'
-            #   , 'factiva.analytics.lists',
-              ],
+    # packages=['factiva.analytics', 'factiva.analytics.article_retrieval', 'factiva.analytics.auth',
+    #           'factiva.analytics.common', 'factiva.analytics.taxonomy', 'factiva.analytics.snapshots',
+    #           'factiva.analytics.streams', 'factiva.analytics.integration'
+    #         #   , 'factiva.analytics.lists',
+    #           ],
+    packages=find_packages(where='src'),
     url='https://developer.dowjones.com/',
     project_urls={
             "GitHub": "https://github.com/dowjones/factiva-analytics-python",
@@ -48,30 +48,43 @@ setup(
         # Indicate who your project is intended for
         'Intended Audience :: Science/Research',
         'Intended Audience :: Financial and Insurance Industry',
+        'Intended Audience :: Healthcare Industry',
         'Operating System :: OS Independent',
         'Topic :: Office/Business :: News/Diary',
         'Topic :: Office/Business :: Financial :: Investment',
+        'Topic :: Office/Business :: Financial :: News',
+        'Topic :: Office/Business :: Financial :: Risk Management',
+        'Topic :: Office/Business :: Financial :: Compliance',
+        'Topic :: Office/Business :: Financial :: Trading',
+        'Topic :: General :: News',
+        'Topic :: General :: Financial',
+        'Topic :: General :: Investment',
+        'Topic :: General :: Artificial Intelligence',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
 
         'License :: OSI Approved :: MIT License',
 
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13'
     ],
     keywords='news, news aggregator, risk, compliance, nlp, alternative data, factiva, trading news, market movers',
     # Required version conditioned by typed lists and Pandas
-    python_requires='>=3.8.4',
+    python_requires='>=3.10.0',
     install_requires=[
-        'requests>=2.28.1',
-        'pandas>=1.5.2',
-        'fastavro>=1.7.0',
-        'google-cloud-core>=2.3.2',
-        'google-cloud-pubsub>=2.13.11'
+        'requests>=2.30.0',
+        'pandas>=2.2.0',
+        'fastavro>=1.9.0',
+        'google-cloud-core>=2.4.0',
+        'google-cloud-pubsub>=2.26.0'
     ],
     extras_require={
-        "MongoDB": ["pymongo"],
-        "Elasticsearch": ["elasticsearch"],
-        "BigQuery": ["google-cloud-bigquery"]
+        'dev': [
+            'pytest>=6.0',
+            'sphinx>=3.0',
+        ],
+        'mongodb': ['pymongo'],
+        'elasticsearch': ['elasticsearch'],
+        'bigquery': ['google-cloud-bigquery']
     })

@@ -93,7 +93,7 @@ class ArticleRetrieval():
             from factiva.analytics import ArticleRetrieval
             ar = ArticleRetrieval()
             article = ar.retrieve_single_article(an='WSJO000020221229eict000jh')
-            article
+            print(article.txt)
 
         output
 

@@ -6,9 +6,9 @@ PIP
 
 This package can be installed using PIP. The recommended pocedure is running:
 
-    .. code-block::
+.. code-block::
 
-        pip install -u factiva-analytics
+    pip install -u factiva-analytics
 
 This will install and/or update the package to the latest official release.
 
@@ -35,3 +35,4 @@ components will be used within the solution.
 
 * elasticsearch: Used in a Streams custom handler and bulk data import.
 * bigquery: Used in a Streams custom handler and bulk data import.
+* MongoDB: Used in a Stream custom handler and bulk data import.

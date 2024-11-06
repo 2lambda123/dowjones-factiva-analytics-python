@@ -17,7 +17,7 @@ class SnapshotBaseJobResponse():
 
 
     def __str__(self, detailed=True, prefix='  |-', root_prefix=''):
-        ret_val = f"{root_prefix}<factiva.analytics.{str(self.__class__).split('.')[-1]}\n"
+        ret_val = f"{root_prefix}<'factiva.analytics.{str(self.__class__).split('.')[-1]}\n"
         ret_val += f"{prefix}job_id: {tools.print_property(self.job_id)}\n"
         ret_val += f"{prefix}job_link: {tools.print_property(self.job_link)}\n"
         ret_val += f"{prefix}job_state: {tools.print_property(self.job_state)}\n"
@@ -95,7 +95,7 @@ class SnapshotBaseQuery():
 
 
     def __str__(self, detailed=True, prefix='  ├─', root_prefix=''):
-        ret_val = f"{root_prefix}<factiva.analytics.{str(self.__class__).split('.')[-1]}\n"
+        ret_val = f"{root_prefix}<'factiva.analytics.{str(self.__class__).split('.')[-1]}\n"
         ret_val += f'{prefix}where: '
         ret_val += (self.where[:77] + '...') if len(self.where) > 80 else self.where
         # if detailed:
@@ -156,7 +156,7 @@ class SnapshotBase():
 
 
     def __str__(self, detailed=True, prefix='  ├─', root_prefix=''):
-        ret_val = f"{root_prefix}<factiva.analytics.{str(self.__class__).split('.')[-1]}\n"
+        ret_val = f"{root_prefix}<'factiva.analytics.{str(self.__class__).split('.')[-1]}\n"
         ret_val += f"{prefix}user_key: {self.user_key.__str__(detailed=False, prefix='  │  ├─')}\n"
         if self.query:
             ret_val += f"{prefix}query: {self.query.__str__(detailed=False, prefix='  │  ├─')}\n"

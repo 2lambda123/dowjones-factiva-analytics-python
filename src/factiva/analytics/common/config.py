@@ -13,6 +13,7 @@ def load_environment_value(config_key, default=None) -> str:
 # Logging Level
 FACTIVA_LOGLEVEL = load_environment_value('FACTIVA_LOGLEVEL', 'INFO').upper()
 
+USERAGENT = load_environment_value('USERAGENT', 'False').upper() == 'FALSE'
 
 # Default file locations
 DOWNLOAD_DEFAULT_FOLDER = load_environment_value(

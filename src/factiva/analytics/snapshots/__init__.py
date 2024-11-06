@@ -5,7 +5,7 @@
 __all__ = [
     'SnapshotExplain', 'SnapshotExplainQuery', 'SnapshotExplainJobResponse', 'SnapshotExplainSamplesResponse',
     'SnapshotTimeSeries', 'SnapshotTimeSeriesQuery', 'SnapshotTimeSeriesJobReponse',
-    'SnapshotExtraction', 'SnapshotExtractionQuery', 'SnapshotExtractionJobReponse'
+    'SnapshotExtraction', 'SnapshotExtractionQuery', 'SnapshotExtractionJobReponse', 'SnapshotExtractionListItem', 'SnapshotExtractionList',
     ]
 
 from .query import SnapshotQuery
@@ -14,4 +14,4 @@ from .snapshot import Snapshot
 
 from .explain import SnapshotExplain, SnapshotExplainQuery, SnapshotExplainJobResponse, SnapshotExplainSamplesResponse
 from .time_series import SnapshotTimeSeries, SnapshotTimeSeriesQuery, SnapshotTimeSeriesJobReponse
-from .extraction import SnapshotExtraction, SnapshotExtractionQuery, SnapshotExtractionJobReponse
+from .extraction import SnapshotExtraction, SnapshotExtractionQuery, SnapshotExtractionJobReponse, SnapshotExtractionListItem, SnapshotExtractionList

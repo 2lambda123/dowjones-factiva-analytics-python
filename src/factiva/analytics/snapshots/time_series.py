@@ -28,6 +28,7 @@ class SnapshotTimeSeriesJobReponse(SnapshotBaseJobResponse):
     """
 
     data : pd.DataFrame = None
+    download_link : str = None
     errors : list[dict] = None
     # Consider adding calculated values for start/end date and the number
     # of records
@@ -43,7 +44,7 @@ class SnapshotTimeSeriesJobReponse(SnapshotBaseJobResponse):
 
     def __str__(self, detailed=True, prefix='  ├─', root_prefix=''):
         ret_val = super().__str__(detailed, prefix, root_prefix)
-        ret_val += f"{prefix}data: {tools.print_property(self.data)}"
+        ret_val += f"{prefix}download_link: {tools.print_property(self.download_link[0:20] + '...' + self.download_link[-20:])}"
         if self.errors:
             ret_val += f"\n{prefix.replace('├', '└')}errors: [{len(self.errors)}]"
             err_list = [f"\n{prefix[0:-1]}  |-{err['title']}: {err['detail']}" for err in self.errors]
@@ -209,7 +210,7 @@ class SnapshotTimeSeriesQuery(SnapshotBaseQuery):
 
     def __str__(self, detailed=True, prefix='  ├─', root_prefix=''):
         ret_val = super().__str__(detailed, prefix, root_prefix)
-        ret_val = ret_val.replace('└─...', '├─...')
+        ret_val = ret_val.replace('└─ex', '├─ex')
         ret_val += f"\n{prefix}frequency: {tools.print_property(self.frequency)}"
         ret_val += f"\n{prefix}date_field: {tools.print_property(self.date_field)}"
         ret_val += f"\n{prefix}group_dimensions: {tools.print_property(self.group_dimensions)}"
@@ -238,9 +239,9 @@ class SnapshotTimeSeries(SnapshotBase):
 
     def __init__(
         self,
+        job_id=None,
         user_key=None,
-        query=None,
-        job_id=None
+        query=None
     ):
         super().__init__(user_key=user_key, query=query, job_id=job_id)
         self.__log = log.get_factiva_logger()
@@ -284,8 +285,7 @@ class SnapshotTimeSeries(SnapshotBase):
 
         headers_dict = {
                 'user-key': self.user_key.key,
-                'Content-Type': 'application/json',
-                'X-API-VERSION': '2.0'
+                'Content-Type': 'application/json'
             }
         
         submit_url = f'{self.__JOB_BASE_URL}'
@@ -341,7 +341,8 @@ class SnapshotTimeSeries(SnapshotBase):
             self.job_response.job_state = response_data['data']['attributes']['current_state']
             self.job_response.job_link = response_data['links']['self']
             if self.job_response.job_state == const.API_JOB_DONE_STATE:
-                self.job_response.data = pd.DataFrame(response_data['data']['attributes']['results'])
+                # self.job_response.data = pd.DataFrame(response_data['data']['attributes']['results'])
+                self.job_response.download_link = response_data['data']['attributes']['download_link']
             if 'errors' in response_data.keys():
                 self.job_response.errors = response_data['errors']
         elif response.status_code == 404:
@@ -351,6 +352,7 @@ class SnapshotTimeSeries(SnapshotBase):
             raise ValueError(f'Bad Request: {detail}')
         else:
             raise RuntimeError(f'API request returned an unexpected HTTP status, with content [{response.text}]')
+        # TODO: Download file and assign the self.job_response.data variable
         self.__log.info('get_job_response End')
         return True
 

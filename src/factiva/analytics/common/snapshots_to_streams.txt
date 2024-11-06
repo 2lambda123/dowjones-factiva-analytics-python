@@ -1,0 +1,21 @@
+import json
+
+queries = json.load(open('dna_queries_october_2020.json', 'rt', encoding='utf-8'))
+
+with_streams = []
+
+for query in queries:
+    snapshot_query = query['snapshots_query']
+    if 'REGEXP_CONTAINS' in snapshot_query:
+        snapshot_query = snapshot_query.replace(
+            'REGEXP_CONTAINS', 'REGEXP_LIKE')
+        snapshot_query = snapshot_query.replace('r\'(?i)', '\'')
+        snapshot_query = snapshot_query.replace('(\\b)\'', '(\\b)\', \'i\'')
+        query['streams_query'] = snapshot_query
+    else:
+        query['streams_query'] = snapshot_query
+
+    with_streams.append(query)
+
+json.dump(with_streams, open('stream_query_october_2020.json',
+                             'wt', encoding='utf-8'), ensure_ascii=False)

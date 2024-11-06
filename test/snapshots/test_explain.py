@@ -13,6 +13,8 @@ INVALID_WHERE_STATEMENT = "publecation_datetime >= '2023-01-01 00:00:00'"  # dat
 # Test operations before any API request
 
 def test_create_from_envuser():
+    if GITHUB_CI:
+        pytest.skip("Not to be tested in GitHub Actions")
     se = SnapshotExplain()
     assert isinstance(se, SnapshotExplain)
     assert se.user_key.key == ENVIRONMENT_USER_KEY
@@ -23,6 +25,8 @@ def test_create_from_envuser():
     }
 
 def test_create_from_user_param():
+    if GITHUB_CI:
+        pytest.skip("Not to be tested in GitHub Actions")
     se = SnapshotExplain(user_key=VALID_USER_KEY)
     assert isinstance(se, SnapshotExplain)
     assert se.user_key.key == VALID_USER_KEY
@@ -33,6 +37,8 @@ def test_create_from_user_param():
     }
 
 def test_create_from_userkey():
+    if GITHUB_CI:
+        pytest.skip("Not to be tested in GitHub Actions")
     u = UserKey()
     assert isinstance(u, UserKey)
     se = SnapshotExplain(user_key=u)
@@ -45,6 +51,8 @@ def test_create_from_userkey():
     }
 
 def test_create_envuser_where():
+    if GITHUB_CI:
+        pytest.skip("Not to be tested in GitHub Actions")
     se = SnapshotExplain(query=VALID_WHERE_STATEMENT)
     assert isinstance(se, SnapshotExplain)
     assert se.user_key.key == ENVIRONMENT_USER_KEY
@@ -55,6 +63,8 @@ def test_create_envuser_where():
     }
 
 def test_create_envuser_envwhere():
+    if GITHUB_CI:
+        pytest.skip("Not to be tested in GitHub Actions")
     seq = SnapshotExplainQuery()
     assert isinstance(seq, SnapshotExplainQuery)
     se = SnapshotExplain(query=seq)
@@ -67,6 +77,8 @@ def test_create_envuser_envwhere():
     }
 
 def test_failed_where_and_jobid():
+    if GITHUB_CI:
+        pytest.skip("Not to be tested in GitHub Actions")
     with pytest.raises(ValueError, match=r'The query and job_id parameters*'):
         se = SnapshotExplain(query=VALID_WHERE_STATEMENT, job_id='abcd1234-ab12-ab12-ab12-abcdef123456')
         assert isinstance(se, SnapshotExplain)

@@ -2,6 +2,7 @@
   Module containing all clases that interact with the Factiva Analytics - Streams service
 """
 import time
+import pandas as pd
 from ..auth import UserKey
 from ..snapshots.base import SnapshotBaseQuery
 from ..common import log, const, req, config, tools
@@ -35,7 +36,7 @@ class StreamingSubscription():
 
     def __str__(self, table=False, prefix='  ├─', root_prefix=''):
         if not table:
-            ret_val = f"{root_prefix}<factiva.analytics.{str(self.__class__).split('.')[-1]}"
+            ret_val = f"{root_prefix}<'factiva.analytics.{str(self.__class__).split('.')[-1]}"
             ret_val += f'{prefix}short_id: {self.short_id}'
         else:
             ret_val = f"{prefix}{self.short_id:>8}"
@@ -99,7 +100,7 @@ class StreamingQuery(SnapshotBaseQuery):
 
 
     def __str__(self, detailed=True, prefix='  ├─', root_prefix=''):
-        ret_val = f"{root_prefix}<factiva.analytics.{str(self.__class__).split('.')[-1]}\n"
+        ret_val = f"{root_prefix}<'factiva.analytics.{str(self.__class__).split('.')[-1]}\n"
         ret_val += f'{prefix}where: '
         ret_val += (self.where[:77] + '...') if len(self.where) > 80 else self.where
         # if detailed:
@@ -280,7 +281,7 @@ class StreamingInstance():
 
 
     def __str__(self, detailed=True, prefix='  ├─', root_prefix=''):
-        ret_val = f"{root_prefix}<factiva.analytics.{str(self.__class__).split('.')[-1]}"
+        ret_val = f"{root_prefix}<'factiva.analytics.{str(self.__class__).split('.')[-1]}"
         if self.id:
             ret_val += f"\n{prefix}id: <Hidden>"
             ret_val += f"\n{prefix}short_id: {tools.print_property(self.short_id)}"
@@ -307,4 +308,72 @@ class StreamingInstance():
 
         ret_val += f"\n{prefix.replace('├', '└')}status: {tools.print_property(self.status)}"
 
+        return ret_val
+
+
+# Implement StreamingInstanceListItem and StreamingInstanceList classes
+class StreamingInstanceListItem():
+
+    id: str = None
+    short_id: str = None
+    job_status: str = None
+    n_subscriptions: str = None
+
+    def __init__(self, id:str=None,
+                 short_id:str=None,
+                 job_status:str=None,
+                 n_subscriptions:str=None) -> None:
+        self.id = id
+        self.short_id = short_id
+        self.job_status = job_status
+        self.n_subscriptions = n_subscriptions
+
+
+    def __repr__(self):
+        return self.__str__()
+
+
+    def __str__(self, prefix='  ├─', root_prefix='', row=True, index=None):
+        if row:
+            if index is not None:
+                prefix = f"{prefix}[{index:<3}] "
+            ret_val = f"{prefix}{self.short_id:<12} {self.job_status:<22} {self.n_subscriptions:<16}\n"
+        else:
+            ret_val = f"{root_prefix}<'factiva.analytics.{str(self.__class__).split('.')[-1]}\n"
+            ret_val += f"{prefix}short_id: {self.short_id}\n"
+            ret_val += f"{prefix}job_status: {self.job_status}\n"
+            ret_val += f"{prefix}n_subscriptions: {self.n_subscriptions}"
+        return ret_val
+
+
+class StreamingInstanceList():
+
+    items: list[StreamingInstanceListItem] = None
+
+
+    def __init__(self, df_streams: pd.DataFrame = None) -> None:
+        self.items = []
+        if df_streams is not None:
+            for index, row in df_streams.iterrows():
+                self.items.append(StreamingInstanceListItem(
+                    id=row['stream_id'],
+                    short_id=row['short_id'],
+                    job_status=row['job_status'],
+                    n_subscriptions=row['n_subscriptions']
+                ))
+
+
+    def __getitem__(self, index):
+        return StreamingInstance(self.items[index].short_id)
+
+
+    def __repr__(self):
+        return self.__str__()
+
+
+    def __str__(self, prefix='  ├─'):
+        ret_val = f"<'factiva.analytics.{str(self.__class__).split('.')[-1]}\n"
+        ret_val += f"{prefix}      {'short_id':<12} {'job_status':<22} {'n_subscriptions':<16}\n"
+        for ix, item in enumerate(self.items):
+            ret_val += item.__str__(row=True, index=ix)
         return ret_val
